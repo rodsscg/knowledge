@@ -9,6 +9,6 @@ module.exports = {
         password: ''
     },
     mongo: {
-        uri: ''
+        uri: 'mongodb://user:password@host:port/dataset?authSource=table'
     }
 }
