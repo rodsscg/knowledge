@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt-nodejs')
+const HttpStatus = require('http-status-codes')
 
 module.exports = (app) => {
 
@@ -32,7 +33,7 @@ module.exports = (app) => {
             if (!isUpdate()) await validateInsert(user.email);
 
         } catch (msg) {
-            return res.status(400).send(msg)
+            return res.status(HttpStatus.BAD_REQUEST).send(msg)
         }
 
         user.password = encryptPassword(user.password)
@@ -42,21 +43,22 @@ module.exports = (app) => {
             app.db('users')
                 .update(user)
                 .where({ id: user.id })
-                .then(() => res.status(204).send())
-                .catch((err) => res.status(500).send(err))
+                .then(() => res.status(HttpStatus.NO_CONTENT).send())
+                .catch((err) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err))
         } else {
             app.db('users')
                 .insert(user)
-                .then(() => res.status(204).send())
-                .catch((err) => res.status(500).send(err))
+                .then(() => res.status(HttpStatus.NO_CONTENT).send())
+                .catch((err) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err))
         }
     }
 
     const get = (req, res) => {
         app.db('users')
             .select('id', 'name', 'email', 'admin')
+            .whereNull('deletedAt')
             .then((users) => res.json(users))
-            .catch((err) => res.status(500).send(err))
+            .catch((err) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err))
     }
 
     const getById = (req, res) => {
@@ -64,13 +66,33 @@ module.exports = (app) => {
             .select('id', 'name', 'email', 'admin')
             .where({ id: req.params.id })
             .first()
-            .then((user) => user ? res.json(user) : res.status(404).send('Cliente não encontrado'))
-            .catch((err) => res.status(500).send(err))
+            .then((user) => user ? res.json(user) : res.status(HttpStatus.NOT_FOUND).send('Cliente não encontrado'))
+            .catch((err) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err))
+    }
+
+    const remove = async (req, res) => {
+        try {
+            const articles = await app.db('articles')
+                .where({ userId: req.params.id })
+            notExistsOrError(articles, 'Usuário possui artigos.')
+
+            const rowsUpdated = await app.db('users')
+                .update({ deletedAt: new Date() })
+                .where({ id: req.params.id })
+                
+            existsOrError(rowsUpdated, 'Usuário não foi encontrado.')
+
+            res.status(HttpStatus.NO_CONTENT).send()
+
+        } catch(msg) {
+            res.status(HttpStatus.BAD_REQUEST).send(msg)
+        }
     }
 
     return {
         save,
         get,
-        getById
+        getById,
+        remove
     }
 }

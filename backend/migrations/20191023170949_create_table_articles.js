@@ -1,7 +1,10 @@
-const tableName = 'articles';
+const tableName = 'articles'
 
-exports.up = function(knex, Promise) {
-    return knex.schema.createTable(tableName, (table) => {
+exports.up = ({ schema } = knex) => {
+    
+    return schema.createTable(tableName, (table) => {
+
+        //Columns
         table.increments('id')
             .primary()
         table.string('name')
@@ -11,6 +14,8 @@ exports.up = function(knex, Promise) {
         table.string('imageUrl', 1000)
         table.binary('content')
             .notNull()
+
+        //Foreign Keys
         table.integer('userId')
             .references('id')
             .inTable('users')
@@ -18,8 +23,6 @@ exports.up = function(knex, Promise) {
             .references('id')
             .inTable('categories')
     })
-};
+}
 
-exports.down = function(knex, Promise) {
-    return knex.schema.dropTable(tableName)
-};
+exports.down = ({ schema } = knex) => schema.dropTable(tableName)
