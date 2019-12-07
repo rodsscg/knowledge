@@ -1,12 +1,9 @@
 <template>
-  <div id="app">
-    <h1>Versão Inicial teste teste</h1>
-  </div>
+  <div class="content"></div>
 </template>
 
 <script>
 export default {
-  name: 'App',
 };
 </script>
 

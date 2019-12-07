@@ -2,9 +2,10 @@
 node_modules
 /dist
 
-# local env files
+# Env files
 .env.local
 .env.*.local
+.env
 
 # Log files
 npm-debug.log*
@@ -19,3 +20,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+#Linux 
+.directory
