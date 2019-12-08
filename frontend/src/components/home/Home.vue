@@ -14,7 +14,7 @@ import axios from 'axios';
 
 import PageTitle from '../templates/PageTitle.vue';
 import Stat from './Stat.vue';
-import baseApiUrl from '../../global';
+import { baseApiUrl } from '../../global';
 
 export default {
   name: 'Home',
