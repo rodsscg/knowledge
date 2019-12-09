@@ -3,7 +3,7 @@ const queries = require('./queries')
 module.exports = (app) => {
 
     const { existsOrError, notExistsOrError } = app.api.validation
-    const limit = 10
+    const limit = 1
 
     const save = (req, res) => {
 

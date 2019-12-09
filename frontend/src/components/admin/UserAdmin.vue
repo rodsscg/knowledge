@@ -144,6 +144,7 @@ export default {
       axios[method](`${baseApiUrl}/users${id}`, this.user)
         .then(() => {
           this.$toasted.global.defaultSuccess();
+          this.loadUsers();
         }).catch(showError);
     },
 

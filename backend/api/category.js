@@ -4,7 +4,8 @@ module.exports = (app) => {
 
     const save = async (req, res) => {
 
-        const category = { ...req.body }
+        const { id, name, parentId } = req.body
+        const category = { id, name, parentId }
 
         if (req.params.id) category.id = req.params.id
 
